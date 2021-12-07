@@ -5,7 +5,7 @@
 #include "stm8s_it.h"
 #include <string.h>
 
-void UART2_init(void);
+void init_UART2(void);
 void rx_data(uint8_t size);
 void tx_data(uint8_t *data, uint8_t size);
 

@@ -1,49 +1,73 @@
 #include "command_parser.h"
 
-#define COMMANDS_AMOUNT 2
-
 extern uint8_t data[256];
 
-extern uint8_t buffer_position;
-extern uint8_t buffer_size;
-extern uint8_t buffer[256];
+extern uint8_t rx_buffer_position;
+extern uint8_t rx_buffer_size;
+extern uint8_t rx_buffer[256];
 
+extern uint8_t tx_buffer_position;
+extern uint8_t tx_buffer_size;
+extern uint8_t tx_buffer[256];
 
 void set_command(command_name_e name)
 {
   uint8_t *command = commands[name].value;
   size_t command_len = commands[name].command_len;
   
-  memcpy(data, command, command_len);
+  memcpy(tx_buffer, command, command_len);
 }
 
-uint8_t *get_command(void) 
+uint8_t *get_command_answer(command_name_e name)
 {
-  uint8_t data_copy[256];
-  memcpy(data_copy, data, 256);
-  
-  uint8_t *token = (uint8_t*)strtok((char*)data_copy, "\n");
-  return token;
+  uint8_t *answer = NULL;
+  memcpy(answer, rx_buffer, answers[name].answer_len);
+  return answer;
 }
 
-
-void tx_command(void)
+void tx_command(command_name_e name)
 {
-  uint8_t *command = get_command();
-  uint8_t size = strlen((char *)command);
+  set_command(name);
   
-  buffer_position = 0;
-  buffer_size = size;
+  size_t command_len = commands[name].command_len;
+  size_t answer_len = answers[name].answer_len;
+  
+  tx_buffer_position = 0;
+  tx_buffer_size = command_len;
   
   UART2_ITConfig(UART2_IT_TXE, ENABLE);
+  rx_data(answer_len);
 }   
+
+uint8_t check_answer(command_name_e name, uint8_t *answer)
+{
+  uint8_t result;
+  uint8_t *expected_answer = NULL;
+  uint8_t answer_len = answers[name].answer_len;
+  switch (name) 
+  {
+    case AT:
+    {
+      memcpy(expected_answer, answers[name].value, answer_len);
+      result = memcmp(expected_answer, answer, answer_len);
+      break; 
+    }
+    case ATI:
+    {
+      memcpy(expected_answer, answers[name].value, answer_len);
+      result = memcmp(expected_answer, answer, answer_len);
+      break;
+    }
+    default:
+    {
+      result = 1;
+      break;
+    }
+  }
+  return result;
+}
 
 void command_state_machine(void)
 {
-  command_name_e name = AT;
-  set_command(name);
-  tx_command();
-  rx_data(commands[name].max_answer_len);
-  
   
 }
