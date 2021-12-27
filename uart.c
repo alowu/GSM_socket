@@ -1,20 +1,19 @@
 #include "uart.h"
 
-extern uint8_t data[256];
+uint8_t data[26];
 
-extern uint8_t rx_buffer_position;
-extern uint8_t rx_buffer_size;
-extern uint8_t rx_buffer[256];
+uint8_t rx_buffer_position;
+uint8_t rx_buffer_size;
+uint8_t rx_buffer[26];
 
-extern uint8_t tx_buffer_position;
-extern uint8_t tx_buffer_size;
-extern uint8_t tx_buffer[256];
+uint8_t tx_buffer_position;
+uint8_t tx_buffer_size;
+uint8_t tx_buffer[26];
 
-extern uint8_t counter;
+volatile uint8_t counter = 0;
 
 INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
  {
-    
     UART2_SendData8(tx_buffer[tx_buffer_position++]);
     while(!UART2_SR_TXE)
     {
@@ -31,9 +30,9 @@ INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
 
  INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
  {
-    rx_buffer[rx_buffer_position++] = UART2_ReceiveData8();
+  rx_buffer[rx_buffer_position++] = UART2_ReceiveData8();
   
-  if (rx_buffer_position == rx_buffer_size || rx_buffer[rx_buffer_position - 1] == '\n')
+  if (rx_buffer_position == rx_buffer_size)
   {
     memcpy(data, rx_buffer, rx_buffer_size);
     rx_buffer_position = 0;
@@ -71,7 +70,7 @@ void init_UART2(void)
         - Receive and transmit enabled
         - UART Clock disabled
   */
-  UART2_Init((uint32_t) 115200, UART2_WORDLENGTH_8D,UART2_STOPBITS_1, UART2_PARITY_NO,
+  UART2_Init((uint32_t) 9600, UART2_WORDLENGTH_8D,UART2_STOPBITS_1, UART2_PARITY_NO,
                    UART2_SYNCMODE_CLOCK_DISABLE, UART2_MODE_TXRX_ENABLE);
   /* Enable the UART Receive interrupt: this interrupt is generated when the UART
     receive data register is not empty */

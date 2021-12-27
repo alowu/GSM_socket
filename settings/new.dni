@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1713378052
+Checksum=-2022797673
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -54,15 +54,20 @@ LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Breakpoints]
 Count=0
 [Aliases]
-Count=0
+A0=_ "H:\rezetka_old-iar\new_project\command_parser.c" ""
+A1=_ "H:\rezetka_old-iar\new_project\init_socket.c" ""
+A2=_ "H:\rezetka_old-iar\new_project\main.c" ""
+A3=_ "H:\rezetka_old-iar\new_project\src\stm8s_gpio.c" ""
+A4=_ "H:\rezetka_old-iar\new_project\src\stm8s_uart2.c" ""
+Count=5
 SuppressDialog=0

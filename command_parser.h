@@ -9,7 +9,9 @@
 typedef enum
 {
   AT,
-  ATI
+  ATI,
+  CPIN,
+  QINISTAT
 } command_name_e;
 
 typedef struct
@@ -22,7 +24,9 @@ typedef struct
 static commands_t commands[] = 
 {
   {AT, "AT\r\n", 4},
-  {ATI, "ATI\r\n", 5}
+  {ATI, "ATI<CR><LF>", 11},
+  {CPIN, "AT+CPIN?\r\n", 10},
+  {QINISTAT, "AT+QINISTAT\r\n", 13}
 };
 
 typedef struct
@@ -34,8 +38,10 @@ typedef struct
 
 static answers_t answers[] =
 {
-  {AT, 4, "OK\r\n"},
-  {ATI, 13, "TEST ANSWER\r\n"}
+  {AT, 7, "AT\rOK\r\n"},
+  {ATI, 13, "TEST ANSWER\r\n"},
+  {CPIN, 18, "+CPIN: READY\r\nOK\r\n"},
+  {QINISTAT, 12, "+QINISTAT: "} // 11 is letters + 1 <state> number
 };
 
 void set_command(command_name_e name);
