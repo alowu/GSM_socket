@@ -8,5 +8,8 @@
 void init_UART2(void);
 void rx_data(uint8_t size);
 void tx_data(uint8_t *data, uint8_t size);
+void send_data_byte(uint8_t data);
+void send_data_size(uint8_t *data, uint8_t size);
+void send_data(uint8_t *data);
 
 #endif 

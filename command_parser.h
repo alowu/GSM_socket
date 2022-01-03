@@ -24,7 +24,7 @@ typedef struct
 static commands_t commands[] = 
 {
   {AT, "AT\r\n", 4},
-  {ATI, "ATI<CR><LF>", 11},
+  {ATI, "ATI\r\n", 11},
   {CPIN, "AT+CPIN?\r\n", 10},
   {QINISTAT, "AT+QINISTAT\r\n", 13}
 };
@@ -38,7 +38,7 @@ typedef struct
 
 static answers_t answers[] =
 {
-  {AT, 7, "AT\rOK\r\n"},
+  {AT, 3, "OK\r"},
   {ATI, 13, "TEST ANSWER\r\n"},
   {CPIN, 18, "+CPIN: READY\r\nOK\r\n"},
   {QINISTAT, 12, "+QINISTAT: "} // 11 is letters + 1 <state> number

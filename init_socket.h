@@ -9,7 +9,8 @@ void init_GPIO(void);
 void turn_on_M66(void);
 uint8_t check_M66(void);
 
-uint8_t init_state_machine(void);
+void initialize_peripherals(void);
+void initialize_M66(void);
 
 void test(void);
 

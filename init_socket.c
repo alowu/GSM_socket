@@ -1,19 +1,7 @@
 #include "init_socket.h"
 #include "tim4_millis.h"
 
-extern uint8_t data[26];
-
-/*void delay(uint16_t time)
-{
-  while (time != 0)
-  {
-    time--;
-  }
-}*/
-/*
-с + работает
-с - нет
-*/
+extern uint8_t r_data[26];
 
 void init_GPIO(void)
 {
@@ -47,18 +35,41 @@ void turn_on_M66(void)
 
 uint8_t check_M66(void)
 {
-  tx_command(ATI);
-  //delay(300);
-  //memcpy(data, get_command_answer(AT), answers[AT].answer_len);
-  return check_answer(ATI, data);
+  tx_command(AT);
+  return check_answer(AT, r_data);
 }
 
-uint8_t init_state_machine(void)
+void initialize_peripherals(void)
 {
+  CLK_DeInit();
+  init_TIM4();
   init_GPIO();
   init_UART2();
-  turn_on_M66();
-  //delay(50);
-  return check_M66();
-  //return 0;
+}
+
+void initialize_M66(void)
+{
+  while(1)
+  {
+    delay(500);
+    GPIO_WriteHigh(GPIOG, GPIO_PIN_0);
+    turn_on_M66();
+    uint8_t is_ready = 1;
+    for (uint8_t i = 0; i < 10; i++)
+    {
+      is_ready = check_M66();
+      if (is_ready == 0)
+      {
+        break;
+      }
+      delay(700);
+    }
+    if (is_ready == 0)
+    {
+      GPIO_WriteLow(GPIOG, GPIO_PIN_0);
+      break;
+    }
+    GPIO_WriteLow(GPIOG, GPIO_PIN_0);
+    delay(500);
+  }
 }

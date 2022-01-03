@@ -1,6 +1,8 @@
 #include "uart.h"
+#include "command_parser.h"
 
-uint8_t data[26];
+uint8_t r_data[26];
+uint8_t t_data[26];
 
 uint8_t rx_buffer_position;
 uint8_t rx_buffer_size;
@@ -10,39 +12,55 @@ uint8_t tx_buffer_position;
 uint8_t tx_buffer_size;
 uint8_t tx_buffer[26];
 
+uint8_t rx_bit = 0;
+uint8_t rx_buf[128];
+
 volatile uint8_t counter = 0;
+extern uint8_t answer_copied;
 
 INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
- {
+{
+  if (tx_buffer_position < tx_buffer_size)
+  {
     UART2_SendData8(tx_buffer[tx_buffer_position++]);
     while(!UART2_SR_TXE)
     {
     }
     counter++;
-   
-  if (tx_buffer_position == tx_buffer_size)
+  }
+  else
   {
     tx_buffer_position = 0;
+    counter = 0;
     UART2_ITConfig(UART2_IT_TXE, DISABLE);
   }
- }
+}
 
-
- INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
- {
-  rx_buffer[rx_buffer_position++] = UART2_ReceiveData8();
-  
-  if (rx_buffer_position == rx_buffer_size)
+INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
+{
+  uint8_t uart_data;
+  if (UART2->SR & UART2_SR_RXNE)
   {
-    memcpy(data, rx_buffer, rx_buffer_size);
-    rx_buffer_position = 0;
-  } 
- }
+   uart_data = UART2_ReceiveData8();
+   rx_buf[rx_bit] = UART2_ReceiveData8();
+   rx_bit++;
+   
+   if (uart_data == '\r')
+   {
+     strcpy((char*)r_data, (char*)rx_buf);
+     answer_copied = 0;
+   }
+   else if (uart_data == '\n')
+   {
+     memset(rx_buf, 0, sizeof(rx_buf));
+     rx_bit = 0;
+   }    
+  }
+}
 
 
 void rx_data(uint8_t size)
 {
-  memcpy(data, '\0', size);
   memcpy(rx_buffer, '\0', size);
   rx_buffer_position = 0;
   rx_buffer_size = size;
@@ -53,9 +71,32 @@ void tx_data(uint8_t *data, uint8_t size)
   memcpy(tx_buffer, data, size);
   tx_buffer_position = 0;
   tx_buffer_size = size;
-  
   UART2_ITConfig(UART2_IT_TXE, ENABLE);
 }    
+
+void send_data_byte(uint8_t data)
+{
+  while (!(UART2->SR & UART2_SR_TC))
+  {
+    UART2_SendData8(data);
+  }
+}
+
+void send_data_size(uint8_t *data, uint8_t size)
+{
+  for (uint8_t i = 0; i < size; i++)
+  {
+    send_data_byte(data[i]);
+  }
+}
+           
+void send_data(uint8_t *data)
+{
+  for (uint8_t i = 0; data[i]; i++)
+  {
+    send_data_byte(data[i]);
+  }
+}
 
 void init_UART2(void)
 {
@@ -70,7 +111,7 @@ void init_UART2(void)
         - Receive and transmit enabled
         - UART Clock disabled
   */
-  UART2_Init((uint32_t) 9600, UART2_WORDLENGTH_8D,UART2_STOPBITS_1, UART2_PARITY_NO,
+  UART2_Init((uint32_t) 115200, UART2_WORDLENGTH_8D,UART2_STOPBITS_1, UART2_PARITY_NO,
                    UART2_SYNCMODE_CLOCK_DISABLE, UART2_MODE_TXRX_ENABLE);
   /* Enable the UART Receive interrupt: this interrupt is generated when the UART
     receive data register is not empty */
