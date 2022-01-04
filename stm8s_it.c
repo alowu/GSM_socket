@@ -29,7 +29,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_it.h"
-
+#include "tim4_millis.h"
 /** @addtogroup Template_Project
   * @{
   */
@@ -131,16 +131,17 @@ INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4)
   */
 }
 
-/**
-  * @brief External Interrupt PORTC Interrupt routine.
-  * @param  None
-  * @retval None
-  */
+uint32_t last_tick = 0;
+
 INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
 {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
+  uint32_t current = millis();
+  if (current - last_tick > 500)
+  {
+    GPIO_WriteReverse(GPIOE, GPIO_PIN_3);
+    //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+    last_tick = current;
+  }  
 }
 
 /**
@@ -386,32 +387,6 @@ INTERRUPT_HANDLER(I2C_IRQHandler, 19)
   */
 }
 
-#if defined(STM8S105) || defined(STM8S005) ||  defined (STM8AF626x)
-/**
-  * @brief UART2 TX interrupt routine.
-  * @param  None
-  * @retval None
-  */
- INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
- {
-    /* In order to detect unexpected events during development,
-       it is recommended to set a breakpoint on the following instruction.
-    */
- }
-
-/**
-  * @brief UART2 RX interrupt routine.
-  * @param  None
-  * @retval None
-  */
- INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
- {
-    /* In order to detect unexpected events during development,
-       it is recommended to set a breakpoint on the following instruction.
-    */
- }
-#endif /* (STM8S105) || (STM8AF626x) */
-
 #if defined(STM8S207) || defined(STM8S007) || defined(STM8S208) || defined (STM8AF52Ax) || defined (STM8AF62Ax)
 /**
   * @brief UART3 TX interrupt routine.
@@ -465,32 +440,6 @@ INTERRUPT_HANDLER(I2C_IRQHandler, 19)
     */
  }
 #endif /* (STM8S208) || (STM8S207) || (STM8AF52Ax) || (STM8AF62Ax) */
-
-#if defined (STM8S903) || defined (STM8AF622x)
-/**
-  * @brief Timer6 Update/Overflow/Trigger Interrupt routine.
-  * @param  None
-  * @retval None
-  */
-INTERRUPT_HANDLER(TIM6_UPD_OVF_TRG_IRQHandler, 23)
- {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
- }
-#else /* STM8S208 or STM8S207 or STM8S105 or STM8S103 or STM8AF52Ax or STM8AF62Ax or STM8AF626x */
-/**
-  * @brief Timer4 Update/Overflow Interrupt routine.
-  * @param  None
-  * @retval None
-  */
- INTERRUPT_HANDLER(TIM4_UPD_OVF_IRQHandler, 23)
- {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
- }
-#endif /* (STM8S903) || (STM8AF622x)*/
 
 /**
   * @brief Eeprom EEC Interrupt routine.

@@ -5,6 +5,8 @@ extern uint8_t r_data[26];
 
 void init_GPIO(void)
 {
+  EXTI_DeInit();
+  
   GPIO_DeInit(GPIOC);
   GPIO_DeInit(GPIOE);
   GPIO_DeInit(GPIOG);
@@ -19,6 +21,11 @@ void init_GPIO(void)
   
   // Init RELE pin
   GPIO_Init(GPIOC, GPIO_PIN_6, GPIO_MODE_OUT_PP_LOW_SLOW);
+  
+  // Init button pin
+  /*GPIO_Init(GPIOC, GPIO_PIN_7, GPIO_MODE_IN_FL_IT);
+
+  EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOC, EXTI_SENSITIVITY_FALL_ONLY);*/
 }
 
 void test(void)

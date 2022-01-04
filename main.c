@@ -13,6 +13,11 @@ int main( void )
 {  
   initialize_peripherals();
   initialize_M66();
+  sim();
+  GPIO_Init(GPIOC, GPIO_PIN_7, GPIO_MODE_IN_FL_IT);
+
+  EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOC, EXTI_SENSITIVITY_FALL_ONLY);
+  rim();
   
   while (1)
   {
