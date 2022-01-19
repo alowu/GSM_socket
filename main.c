@@ -6,18 +6,20 @@
 
 #include "uart.h"
 
-extern uint8_t r_data[26];
-extern uint8_t counter;
-
 int main( void )
 {  
   initialize_peripherals();
   initialize_M66();
-  sim();
+  
+  disableInterrupts();
+  //button
   GPIO_Init(GPIOC, GPIO_PIN_7, GPIO_MODE_IN_FL_IT);
-
   EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOC, EXTI_SENSITIVITY_FALL_ONLY);
-  rim();
+  
+  //check RIN state
+  GPIO_Init(GPIOE, GPIO_PIN_2, GPIO_MODE_IN_FL_IT);
+  EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOE, EXTI_SENSITIVITY_FALL_ONLY);
+  enableInterrupts();
   
   while (1)
   {

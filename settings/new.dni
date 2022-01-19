@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1455717163
+Checksum=-1130664370
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -62,7 +62,8 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Count=0
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\stm8s_it.c}.178.7" 1 0 0 0 "" 0 ""
+Count=1
 [Aliases]
 A0=_ "H:\rezetka_old-iar\new_project\command_parser.c" ""
 A1=_ "H:\rezetka_old-iar\new_project\init_socket.c" ""

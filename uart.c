@@ -1,7 +1,7 @@
 #include "uart.h"
 #include "command_parser.h"
 
-uint8_t r_data[26];
+uint8_t r_data[128];
 uint8_t t_data[26];
 
 uint8_t rx_buffer_position;
@@ -35,26 +35,27 @@ INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
     UART2_ITConfig(UART2_IT_TXE, DISABLE);
   }
 }
-
+uint8_t amount = 0;
 INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
 {
   uint8_t uart_data;
   if (UART2->SR & UART2_SR_RXNE)
   {
    uart_data = UART2_ReceiveData8();
-   rx_buf[rx_bit] = UART2_ReceiveData8();
+   rx_buf[rx_bit] = uart_data;//UART2_ReceiveData8();
    rx_bit++;
-   
+
    if (uart_data == '\r')
    {
-     strcpy((char*)r_data, (char*)rx_buf);
-     answer_copied = 0;
+      strcpy((char*)r_data, (char*)rx_buf);
+      answer_copied = 0;
    }
    else if (uart_data == '\n')
    {
      memset(rx_buf, 0, sizeof(rx_buf));
+     //tx_data(r_data, rx_bit);
      rx_bit = 0;
-   }    
+   }
   }
 }
 

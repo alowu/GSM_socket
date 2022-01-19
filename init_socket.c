@@ -1,7 +1,7 @@
 #include "init_socket.h"
 #include "tim4_millis.h"
 
-extern uint8_t r_data[26];
+extern uint8_t r_data[128];
 
 void init_GPIO(void)
 {
@@ -58,10 +58,9 @@ void initialize_M66(void)
 {
   while(1)
   {
-    delay(500);
-    GPIO_WriteHigh(GPIOG, GPIO_PIN_0);
     turn_on_M66();
     uint8_t is_ready = 1;
+    GPIO_WriteHigh(GPIOG, GPIO_PIN_0);
     for (uint8_t i = 0; i < 10; i++)
     {
       is_ready = check_M66();
@@ -69,7 +68,7 @@ void initialize_M66(void)
       {
         break;
       }
-      delay(700);
+      delay(500);
     }
     if (is_ready == 0)
     {

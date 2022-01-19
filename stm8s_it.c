@@ -30,6 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_it.h"
 #include "tim4_millis.h"
+#include "command_parser.h"
 /** @addtogroup Template_Project
   * @{
   */
@@ -38,6 +39,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+    extern uint8_t r_data[128];
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /* Public functions ----------------------------------------------------------*/
@@ -119,27 +121,33 @@ INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
   */
 }
 
-/**
-  * @brief External Interrupt PORTB Interrupt routine.
-  * @param  None
-  * @retval None
-  */
+uint32_t last_tick = 0;
+
 INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4)
 {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
+  uint32_t current = millis();
+  if (current - last_tick > 1000)
+  {//rele
+    //tx_command(CLCC);
+    delay(100);
+    tx_command(CLCC);
+    if (check_answer(CLCC, r_data) == 0)
+    {
+      GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+      tx_command(ATH);
+    }
+    //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+    //tx_command(ATH);
+    last_tick = current;
+  }
 }
-
-uint32_t last_tick = 0;
 
 INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
 {
   uint32_t current = millis();
   if (current - last_tick > 500)
-  {
+  {//led button
     GPIO_WriteReverse(GPIOE, GPIO_PIN_3);
-    //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
     last_tick = current;
   }  
 }
@@ -163,9 +171,20 @@ INTERRUPT_HANDLER(EXTI_PORTD_IRQHandler, 6)
   */
 INTERRUPT_HANDLER(EXTI_PORTE_IRQHandler, 7)
 {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
+  uint32_t current = millis();
+  if (current - last_tick > 1000)
+  {//rele
+    //tx_command(CLCC);
+      tx_command(CLCC);
+      if (check_answer(CLCC, r_data) == 0)
+      {
+        GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+        tx_command(ATH);
+      }
+    //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+    //tx_command(ATH);
+    last_tick = current;
+  }
 }
 
 #if defined (STM8S903) || defined (STM8AF622x) 

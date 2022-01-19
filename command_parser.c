@@ -1,12 +1,12 @@
 #include "command_parser.h"
 #include "tim4_millis.h"
 
-extern uint8_t r_data[26];
+extern uint8_t r_data[128];
 extern uint8_t t_data[26];
 
 extern uint8_t rx_buffer_position;
 extern uint8_t rx_buffer_size;
-extern uint8_t rx_buffer[26];
+extern uint8_t rx_buffer[128];
 
 extern uint8_t tx_buffer_position;
 extern uint8_t tx_buffer_size;
@@ -40,6 +40,27 @@ void tx_command(command_name_e name)
   UART2_ITConfig(UART2_IT_TXE, ENABLE);
 }   
 
+uint32_t tick = 0;
+
+uint8_t check_ring(void)
+{
+  while (1)
+  {
+    tx_command(CLCC);
+    uint8_t result = memcmp("RING\r", r_data, 5);
+    if (result == 0)
+    {
+      break;
+    } 
+    /*else 
+    {
+      return 1;
+    }*/
+    delay(100);
+  }
+  return 0;
+}
+
 uint8_t check_answer(command_name_e name, uint8_t *answer)
 {
  if (answer_copied == 0)
@@ -51,13 +72,28 @@ uint8_t check_answer(command_name_e name, uint8_t *answer)
   {
     case AT:
     {
-      result = strcmp((char*)expected_answer, (char*)answer);
+      result = memcmp(expected_answer, answer, answer_len);
       break; 
     }
-    case ATI:
+    case CLCC:
     {
-      memcpy(expected_answer, answers[name].value, answer_len);
       result = memcmp(expected_answer, answer, answer_len);
+     /* uint8_t ring = memcmp("RING\r", answer, 5);
+      if (ring == 0)
+      {
+        tx_command(CLCC);
+        result = memcmp("+CLCC", r_data, 5);
+      }*/
+      /*char *ptr = strstr((char*)answer, "+375447876908");
+      
+      if (ptr != NULL)
+      {
+        result = 0;
+      } 
+      else
+      {
+        result = 1;
+      }*/
       break;
     }
     default:
@@ -66,7 +102,7 @@ uint8_t check_answer(command_name_e name, uint8_t *answer)
       break;
     }
   }
-  answer_copied = 0;
+  answer_copied = 1;
   return result;
  }
  else 
