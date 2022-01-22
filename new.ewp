@@ -1574,16 +1574,10 @@
       <name>$PROJ_DIR$\inc\stm8s.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\inc\stm8s_adc1.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\inc\stm8s_clk.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\inc\stm8s_exti.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\inc\stm8s_flash.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\inc\stm8s_gpio.h</name>
@@ -1599,9 +1593,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\inc\stm8s_rst.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\inc\stm8s_spi.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\inc\stm8s_tim4.h</name>
@@ -1646,9 +1637,6 @@
       <name>$PROJ_DIR$\src\stm8s_exti.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\src\stm8s_flash.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\src\stm8s_gpio.c</name>
     </file>
     <file>
@@ -1659,9 +1647,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\src\stm8s_rst.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\src\stm8s_spi.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\src\stm8s_tim4.c</name>

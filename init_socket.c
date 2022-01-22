@@ -10,8 +10,8 @@ void init_GPIO(void)
   GPIO_DeInit(GPIOC);
   GPIO_DeInit(GPIOE);
   GPIO_DeInit(GPIOG);
+
   // Init LED pins
-  //GPIO_Init(GPIOE, GPIO_PIN_2, GPIO_MODE_OUT_PP_LOW_SLOW);
   GPIO_Init(GPIOE, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_SLOW);
   GPIO_Init(GPIOG, GPIO_PIN_0, GPIO_MODE_OUT_PP_LOW_SLOW);
   GPIO_Init(GPIOG, GPIO_PIN_1, GPIO_MODE_OUT_PP_LOW_SLOW);
@@ -21,11 +21,6 @@ void init_GPIO(void)
   
   // Init RELE pin
   GPIO_Init(GPIOC, GPIO_PIN_6, GPIO_MODE_OUT_PP_LOW_SLOW);
-  
-  // Init button pin
-  /*GPIO_Init(GPIOC, GPIO_PIN_7, GPIO_MODE_IN_FL_IT);
-
-  EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOC, EXTI_SENSITIVITY_FALL_ONLY);*/
 }
 
 void test(void)

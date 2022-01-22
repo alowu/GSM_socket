@@ -42,25 +42,6 @@ void tx_command(command_name_e name)
 
 uint32_t tick = 0;
 
-uint8_t check_ring(void)
-{
-  while (1)
-  {
-    tx_command(CLCC);
-    uint8_t result = memcmp("RING\r", r_data, 5);
-    if (result == 0)
-    {
-      break;
-    } 
-    /*else 
-    {
-      return 1;
-    }*/
-    delay(100);
-  }
-  return 0;
-}
-
 uint8_t check_answer(command_name_e name, uint8_t *answer)
 {
  if (answer_copied == 0)
@@ -75,25 +56,26 @@ uint8_t check_answer(command_name_e name, uint8_t *answer)
       result = memcmp(expected_answer, answer, answer_len);
       break; 
     }
-    case CLCC:
+    case RING:
     {
       result = memcmp(expected_answer, answer, answer_len);
-     /* uint8_t ring = memcmp("RING\r", answer, 5);
-      if (ring == 0)
+      break;
+    }
+    case CLIP:
+    {
+      result = memcmp(expected_answer, answer, answer_len);
+      if (result == 0)
       {
-        tx_command(CLCC);
-        result = memcmp("+CLCC", r_data, 5);
-      }*/
-      /*char *ptr = strstr((char*)answer, "+375447876908");
-      
-      if (ptr != NULL)
-      {
-        result = 0;
-      } 
-      else
-      {
-        result = 1;
-      }*/
+        char *p = strstr((char*)answer, "+375447876908");
+        if (p)
+        {
+          result = 0;
+        }
+        else 
+        {
+          result = 1;
+        }
+      }
       break;
     }
     default:
@@ -109,6 +91,16 @@ uint8_t check_answer(command_name_e name, uint8_t *answer)
  {
    return answer_copied;
  }
+}
+
+void check_number(void)
+{
+  char *p = strstr((char*)r_data, "+375447876908");
+  if (p)
+  {
+    GPIO_WriteReverse(GPIOG, GPIO_PIN_1);
+  }
+  tx_command(ATH);
 }
 
 void command_state_machine(void)

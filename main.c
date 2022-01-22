@@ -21,10 +21,13 @@ int main( void )
   EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOE, EXTI_SENSITIVITY_FALL_ONLY);
   enableInterrupts();
   
+  delay(1000);
+  tx_command(CLIP);
+  
   while (1)
   {
-    GPIO_WriteReverse(GPIOG, GPIO_PIN_1);
-    delay(1000);
+    //GPIO_WriteReverse(GPIOG, GPIO_PIN_1);
+    //delay(1000);
   }
 }
 

@@ -49,11 +49,17 @@ INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
    {
       strcpy((char*)r_data, (char*)rx_buf);
       answer_copied = 0;
+      char *clip = strstr((char*)r_data, "+CLIP");
+      if (clip)
+      {
+        check_number();
+      }
    }
    else if (uart_data == '\n')
    {
      memset(rx_buf, 0, sizeof(rx_buf));
-     //tx_data(r_data, rx_bit);
+     /* uncommit for echo */
+     //tx_data(r_data, rx_bit);         
      rx_bit = 0;
    }
   }
@@ -74,30 +80,6 @@ void tx_data(uint8_t *data, uint8_t size)
   tx_buffer_size = size;
   UART2_ITConfig(UART2_IT_TXE, ENABLE);
 }    
-
-void send_data_byte(uint8_t data)
-{
-  while (!(UART2->SR & UART2_SR_TC))
-  {
-    UART2_SendData8(data);
-  }
-}
-
-void send_data_size(uint8_t *data, uint8_t size)
-{
-  for (uint8_t i = 0; i < size; i++)
-  {
-    send_data_byte(data[i]);
-  }
-}
-           
-void send_data(uint8_t *data)
-{
-  for (uint8_t i = 0; data[i]; i++)
-  {
-    send_data_byte(data[i]);
-  }
-}
 
 void init_UART2(void)
 {

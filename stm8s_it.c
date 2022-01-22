@@ -125,21 +125,7 @@ uint32_t last_tick = 0;
 
 INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4)
 {
-  uint32_t current = millis();
-  if (current - last_tick > 1000)
-  {//rele
-    //tx_command(CLCC);
-    delay(100);
-    tx_command(CLCC);
-    if (check_answer(CLCC, r_data) == 0)
-    {
-      GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
-      tx_command(ATH);
-    }
-    //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
-    //tx_command(ATH);
-    last_tick = current;
-  }
+  
 }
 
 INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
@@ -171,20 +157,33 @@ INTERRUPT_HANDLER(EXTI_PORTD_IRQHandler, 6)
   */
 INTERRUPT_HANDLER(EXTI_PORTE_IRQHandler, 7)
 {
-  uint32_t current = millis();
-  if (current - last_tick > 1000)
+  /*uint32_t current = millis();
+  if (current - last_tick > 10)
   {//rele
-    //tx_command(CLCC);
-      tx_command(CLCC);
-      if (check_answer(CLCC, r_data) == 0)
+      if (check_answer(CLIP, r_data) == 0)
       {
-        GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+        //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
+        //GPIO_WriteReverse(GPIOG, GPIO_PIN_0);
+        GPIO_WriteReverse(GPIOG, GPIO_PIN_1);
         tx_command(ATH);
       }
+    while (1)
+    {
+      if (check_answer(RING, r_data) == 0)
+          break;
+    }
+    char *p = strstr((char*)r_data, "+375447876908");
+    if (p)
+    {
+      GPIO_WriteReverse(GPIOG, GPIO_PIN_1);
+    }
+    tx_command(ATH);
     //GPIO_WriteReverse(GPIOC, GPIO_PIN_6);
     //tx_command(ATH);
+    //GPIO_WriteReverse(GPIOG, GPIO_PIN_0);
+    //rim_callback();
     last_tick = current;
-  }
+  }*/
 }
 
 #if defined (STM8S903) || defined (STM8AF622x) 
