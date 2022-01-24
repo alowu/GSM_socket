@@ -17,6 +17,10 @@ uint8_t rx_buf[128];
 
 volatile uint8_t counter = 0;
 extern uint8_t answer_copied;
+extern uint8_t number_set;
+
+volatile uint8_t ring_number = 0;
+uint8_t number_good = 0;
 
 INTERRUPT_HANDLER(UART2_TX_IRQHandler, 20)
 {
@@ -49,10 +53,35 @@ INTERRUPT_HANDLER(UART2_RX_IRQHandler, 21)
    {
       strcpy((char*)r_data, (char*)rx_buf);
       answer_copied = 0;
+      
+      char *ring = strstr((char*)r_data, "RING");
+      if (ring)
+      {
+        ring_number++;
+      }
       char *clip = strstr((char*)r_data, "+CLIP");
       if (clip)
       {
-        check_number();
+        number_good = check_number();
+        if (number_good == 0)
+        {
+          tx_command(ATH);
+        }
+        else
+        {
+          if (get_rele_state() == 0)
+          {
+            GPIO_WriteHigh(GPIOG, GPIO_PIN_1);
+            set_rele_enable();
+            tx_command(ATH);
+          }
+        }
+      }
+      if (ring_number == 4 && number_good == 1 && get_rele_state() == 1)
+      {
+        GPIO_WriteLow(GPIOG, GPIO_PIN_1);
+        set_rele_disable();
+        tx_command(ATH);
       }
    }
    else if (uart_data == '\n')

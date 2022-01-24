@@ -1,5 +1,6 @@
 #include "command_parser.h"
 #include "tim4_millis.h"
+#include "rele.h"
 
 extern uint8_t r_data[128];
 extern uint8_t t_data[26];
@@ -14,7 +15,12 @@ extern uint8_t tx_buffer[26];
 
 extern uint8_t counter;
 
+extern uint8_t number[13];
+
 uint8_t answer_copied = 1;
+uint8_t number_set = 0;
+
+extern uint8_t request_set_number;
 
 void set_command(command_name_e name)
 {
@@ -93,14 +99,17 @@ uint8_t check_answer(command_name_e name, uint8_t *answer)
  }
 }
 
-void check_number(void)
-{
+uint8_t check_number(void)
+{  
   char *p = strstr((char*)r_data, "+375447876908");
   if (p)
   {
-    GPIO_WriteReverse(GPIOG, GPIO_PIN_1);
+    return 1;
   }
-  tx_command(ATH);
+  else 
+  {
+    return 0;
+  }
 }
 
 void command_state_machine(void)

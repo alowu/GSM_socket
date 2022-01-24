@@ -39,7 +39,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-    extern uint8_t r_data[128];
+extern uint8_t r_data[128];
+uint8_t request_set_number = 0;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /* Public functions ----------------------------------------------------------*/
@@ -134,6 +135,7 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
   if (current - last_tick > 500)
   {//led button
     GPIO_WriteReverse(GPIOE, GPIO_PIN_3);
+    request_set_number = 1;
     last_tick = current;
   }  
 }

@@ -6,6 +6,8 @@
 
 #include "uart.h"
 
+uint8_t number[13] = { 0 }; 
+
 int main( void )
 {  
   initialize_peripherals();

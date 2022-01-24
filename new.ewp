@@ -1620,12 +1620,18 @@
     </file>
   </group>
   <group>
-    <name>parser</name>
+    <name>controller</name>
     <file>
       <name>$PROJ_DIR$\command_parser.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\command_parser.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rele.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rele.h</name>
     </file>
   </group>
   <group>

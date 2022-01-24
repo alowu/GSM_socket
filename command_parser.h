@@ -52,7 +52,7 @@ uint8_t *get_command_answer(command_name_e name);
 void tx_command(command_name_e name);
 uint8_t check_ring(void);
 uint8_t check_answer(command_name_e name, uint8_t *answer);
-void check_number(void);
+uint8_t check_number(void);
 
 void command_state_machine(void);
 
